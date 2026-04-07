@@ -303,17 +303,17 @@ function SurveyPage() {
           </div>
         </div>
 
-        {/* The No-Line Matrix */}
-        <div className="hidden lg:block tonal-card overflow-hidden shadow-xl shadow-zinc-200/50 dark:shadow-none bg-white dark:bg-zinc-900">
+        {/* The Unified No-Line Matrix */}
+        <div className="tonal-card overflow-hidden shadow-xl shadow-zinc-200/50 dark:shadow-none bg-white dark:bg-zinc-900">
           <div className="overflow-auto max-h-[calc(100vh-340px)]">
             <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-20">
                 <tr className="bg-[var(--st-surface-low)] dark:bg-zinc-800">
-                  <th className="sticky left-0 z-30 bg-[var(--st-surface-low)] dark:bg-zinc-800 px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">
+                  <th className="sticky left-0 z-30 bg-[var(--st-surface-low)] dark:bg-zinc-800 px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
                     Academic Courses
                   </th>
                   {filteredSkills.map(s => (
-                    <th key={s.id} className="relative px-4 py-20 text-center min-w-[130px]">
+                    <th key={s.id} className="relative px-4 py-20 text-center min-w-[120px] sm:min-w-[130px]">
                       <div className="absolute inset-0 flex items-end justify-center pb-10 overflow-hidden">
                         <span 
                           className="whitespace-nowrap origin-bottom-left -rotate-45 block font-black text-[var(--st-text)] text-sm tracking-tight"
@@ -328,7 +328,7 @@ function SurveyPage() {
               <tbody className="bg-white dark:bg-zinc-900">
                 {filteredCourses.map(course => (
                   <tr key={course.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
-                    <td className="sticky left-0 z-10 bg-inherit px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800">
+                    <td className="sticky left-0 z-10 bg-inherit px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
                       <div className="space-y-2">
                         {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
                         <p className="text-base font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{course.name}</p>
@@ -338,20 +338,31 @@ function SurveyPage() {
                       const key = `${course.id}:${skill.id}`;
                       const isChecked = mappings[key]?.checked;
                       return (
-                        <td key={skill.id} className="px-4 py-7 text-center">
-                          <label className="relative inline-flex items-center justify-center cursor-pointer group/check">
-                            <input 
-                              type="checkbox" 
-                              checked={!!isChecked} 
-                              onChange={() => toggleMapping(course.id, skill.id)}
-                              className="sr-only peer" 
-                            />
-                            <div className="w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-800 peer-checked:bg-[var(--st-primary)] peer-checked:border-[var(--st-primary)] flex items-center justify-center transition-all duration-300 group-hover/check:border-[var(--st-primary)] peer-checked:shadow-lg peer-checked:shadow-violet-500/20">
-                              <svg className="w-4 h-4 text-white opacity-0 scale-50 peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            </div>
-                          </label>
+                        <td key={skill.id} className="px-4 py-7 text-center align-top">
+                          <div className="flex flex-col items-center gap-4">
+                            <label className="relative inline-flex items-center justify-center cursor-pointer group/check">
+                              <input 
+                                type="checkbox" 
+                                checked={!!isChecked} 
+                                onChange={() => toggleMapping(course.id, skill.id)}
+                                className="sr-only peer" 
+                              />
+                              <div className="w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-800 peer-checked:bg-[var(--st-primary)] peer-checked:border-[var(--st-primary)] flex items-center justify-center transition-all duration-300 group-hover/check:border-[var(--st-primary)] peer-checked:shadow-lg peer-checked:shadow-violet-500/20">
+                                <svg className="w-4 h-4 text-white opacity-0 scale-50 peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                            </label>
+                            
+                            {isChecked && (
+                              <textarea 
+                                placeholder="Add note..."
+                                value={mappings[key]?.notes || ''}
+                                onChange={(e) => updateNotes(course.id, skill.id, e.target.value)}
+                                className="w-[120px] px-3 py-2 bg-[var(--st-surface-low)] dark:bg-zinc-800 border-none rounded-xl text-[10px] font-bold focus:ring-2 focus:ring-[var(--st-primary)]/10 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
+                              />
+                            )}
+                          </div>
                         </td>
                       );
                     })}
@@ -362,66 +373,14 @@ function SurveyPage() {
           </div>
         </div>
 
-        {/* Mobile Experience - Tonal Cards */}
-        <div className="lg:hidden space-y-6">
-          {filteredCourses.map(course => {
-            const courseCheckedCount = filteredSkills.filter(skill => mappings[`${course.id}:${skill.id}`]?.checked).length;
-            return (
-              <div key={course.id} className="tonal-card overflow-hidden">
-                <div className="p-7 flex items-center justify-between gap-6 border-b border-zinc-50 dark:border-zinc-800/50">
-                  <div className="truncate">
-                    {course.code && <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">{course.code}</span>}
-                    <h3 className="text-lg font-black text-[var(--st-text)] truncate mt-1">{course.name}</h3>
-                  </div>
-                  <div className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-black tracking-widest ${courseCheckedCount > 0 ? 'primary-gradient text-white shadow-md shadow-violet-500/20' : 'bg-zinc-100 text-zinc-400'}`}>
-                    {courseCheckedCount}
-                  </div>
-                </div>
-                <div className="p-7 space-y-6">
-                  {filteredSkills.map(skill => {
-                    const key = `${course.id}:${skill.id}`;
-                    const isChecked = mappings[key]?.checked;
-                    return (
-                      <div key={skill.id} className="space-y-4">
-                        <label className="flex items-center gap-5 cursor-pointer group">
-                          <input 
-                            type="checkbox" 
-                            checked={!!isChecked} 
-                            onChange={() => toggleMapping(course.id, skill.id)}
-                            className="sr-only peer" 
-                          />
-                          <div className="w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-800 peer-checked:bg-[var(--st-primary)] peer-checked:border-[var(--st-primary)] flex items-center justify-center transition-all duration-300">
-                            <svg className="w-4 h-4 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                          </div>
-                          <div>
-                            <p className="text-base font-bold text-[var(--st-text)]">{skill.name}</p>
-                            {skill.category && <p className="text-xs font-black text-zinc-400 uppercase tracking-widest mt-1 leading-none">{skill.category}</p>}
-                          </div>
-                        </label>
-                        {isChecked && (
-                          <div className="ml-12 animate-in slide-in-from-left-2 duration-300">
-                            <textarea 
-                              placeholder="Add curator notes..."
-                              value={mappings[key]?.notes || ''}
-                              onChange={(e) => updateNotes(course.id, skill.id, e.target.value)}
-                              className="w-full px-5 py-4 bg-[var(--st-surface-low)] dark:bg-zinc-800 border-none rounded-2xl text-sm focus:ring-2 focus:ring-[var(--st-primary)]/10 transition-all outline-none min-h-[60px]"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Mobile Sticky Action */}
-        <div className="lg:hidden mt-10 sticky bottom-6 z-40">
-          <div className="bg-zinc-900 text-white rounded-3xl p-3 pl-8 flex items-center justify-between shadow-2xl">
-            <span className="text-sm font-black uppercase tracking-widest">Done: {progressPercent}%</span>
-            <button onClick={submitSurvey} className="primary-gradient px-8 py-3.5 rounded-2xl text-sm font-black shadow-lg shadow-violet-500/20 active:scale-95 transition-all">
+        {/* Global Floating Action Bar for Mobile */}
+        <div className="lg:hidden mt-8 sticky bottom-6 z-40">
+          <div className="bg-zinc-900/90 backdrop-blur-xl text-white rounded-[32px] p-2.5 pl-8 flex items-center justify-between shadow-2xl border border-white/10">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Total Progress</span>
+              <span className="text-sm font-black tracking-tight">{progressPercent}% DONE</span>
+            </div>
+            <button onClick={submitSurvey} className="primary-gradient px-8 py-4 rounded-[24px] text-xs font-black uppercase tracking-widest shadow-lg shadow-violet-500/20 active:scale-95 transition-all">
               Submit Mapping
             </button>
           </div>
