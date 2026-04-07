@@ -174,12 +174,12 @@ function SurveyPage() {
           <div className="space-y-2">
             <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-1">Full Name</label>
             <input placeholder="Ex: Dr. Jane Cooper" value={identity.name} onChange={e => setIdentity({...identity, name: e.target.value})} required
-              className="w-full px-6 py-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 focus:border-[var(--st-primary)] outline-none transition-all font-bold" />
+              className="w-full px-6 py-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 focus:border-[var(--st-primary)] outline-none transition-all font-bold" />
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-1">Academic Email</label>
             <input type="email" placeholder="jane@university.edu" value={identity.email} onChange={e => setIdentity({...identity, email: e.target.value})} required
-              className="w-full px-6 py-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 focus:border-[var(--st-primary)] outline-none transition-all font-bold" />
+              className="w-full px-6 py-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 focus:border-[var(--st-primary)] outline-none transition-all font-bold" />
           </div>
           <button type="submit"
             className="w-full py-4 primary-gradient text-white font-black rounded-2xl shadow-xl shadow-violet-500/20 hover:shadow-2xl hover:scale-[1.02] transition-all active:scale-[0.98]">
@@ -309,7 +309,7 @@ function SurveyPage() {
             <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-20">
                 <tr className="bg-[var(--st-surface-low)] dark:bg-zinc-800">
-                  <th className="sticky left-0 z-30 bg-[var(--st-surface-low)] dark:bg-zinc-800 px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
+                  <th className="sticky left-0 z-30 bg-white dark:bg-zinc-900 px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
                     Academic Courses
                   </th>
                   {filteredSkills.map(s => (
@@ -328,7 +328,7 @@ function SurveyPage() {
               <tbody className="bg-white dark:bg-zinc-900">
                 {filteredCourses.map(course => (
                   <tr key={course.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
-                    <td className="sticky left-0 z-10 bg-inherit px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
+                    <td className="sticky left-0 z-10 bg-white dark:bg-zinc-900 px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
                       <div className="space-y-2">
                         {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
                         <p className="text-base font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{course.name}</p>
