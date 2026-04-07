@@ -288,7 +288,7 @@ function SurveyPage() {
             <input 
               placeholder="Filter courses by code or name..." 
               value={searchCourse} onChange={e => setSearchCourse(e.target.value)}
-              className="w-full pl-16 pr-8 py-5 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
+              className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
             />
           </div>
           <div className="relative group">
@@ -298,7 +298,7 @@ function SurveyPage() {
             <input 
               placeholder="Search available skills..." 
               value={searchSkill} onChange={e => setSearchSkill(e.target.value)}
-              className="w-full pl-16 pr-8 py-5 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
+              className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
             />
           </div>
         </div>
@@ -359,7 +359,7 @@ function SurveyPage() {
                                 placeholder="Add note..."
                                 value={mappings[key]?.notes || ''}
                                 onChange={(e) => updateNotes(course.id, skill.id, e.target.value)}
-                                className="w-[120px] px-3 py-2 bg-[var(--st-surface-low)] dark:bg-zinc-800 border-none rounded-xl text-[10px] font-bold focus:ring-2 focus:ring-[var(--st-primary)]/10 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
+                                className="w-[120px] px-3 py-2 bg-white border border-zinc-100 dark:border-zinc-800 rounded-xl text-[10px] font-bold text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
                               />
                             )}
                           </div>
@@ -375,12 +375,12 @@ function SurveyPage() {
 
         {/* Global Floating Action Bar for Mobile */}
         <div className="lg:hidden mt-8 sticky bottom-6 z-40">
-          <div className="bg-zinc-900/90 backdrop-blur-xl text-white rounded-[32px] p-2.5 pl-8 flex items-center justify-between shadow-2xl border border-white/10">
+          <div className="bg-white/90 backdrop-blur-xl text-[var(--st-text)] rounded-[32px] p-2.5 pl-8 flex items-center justify-between shadow-2xl border border-zinc-200/50">
             <div className="flex flex-col">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Total Progress</span>
-              <span className="text-sm font-black tracking-tight">{progressPercent}% DONE</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--st-text-variant)]">Total Progress</span>
+              <span className="text-sm font-black tracking-tight text-[var(--st-primary)]">{progressPercent}% DONE</span>
             </div>
-            <button onClick={submitSurvey} className="primary-gradient px-8 py-4 rounded-[24px] text-xs font-black uppercase tracking-widest shadow-lg shadow-violet-500/20 active:scale-95 transition-all">
+            <button onClick={submitSurvey} className="primary-gradient px-8 py-4 rounded-[24px] text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-violet-500/20 active:scale-95 transition-all">
               Submit Mapping
             </button>
           </div>
