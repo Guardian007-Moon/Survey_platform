@@ -330,7 +330,7 @@ function SurveyPage() {
                   <tr key={course.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
                     <td className="sticky left-0 z-10 bg-white px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
                       <div className="space-y-2">
-                        {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
+                        {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
                         <p className="text-base font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{course.name}</p>
                       </div>
                     </td>
