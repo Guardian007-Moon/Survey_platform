@@ -308,7 +308,7 @@ function SurveyPage() {
           <div className="overflow-auto max-h-[calc(100vh-340px)]">
             <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-20">
-                <tr className="bg-[var(--st-surface-low)] dark:bg-zinc-800">
+                <tr className="bg-white border-b border-zinc-200">
                   <th className="sticky left-0 z-30 bg-white dark:bg-zinc-900 px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
                     Academic Courses
                   </th>
