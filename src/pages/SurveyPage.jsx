@@ -304,16 +304,16 @@ function SurveyPage() {
         </div>
 
         {/* The Unified No-Line Matrix */}
-        <div className="tonal-card overflow-hidden shadow-xl shadow-zinc-200/50 dark:shadow-none bg-white dark:bg-zinc-900">
+        <div className="tonal-card overflow-hidden shadow-xl shadow-zinc-200/50 dark:shadow-none bg-white">
           <div className="overflow-auto max-h-[calc(100vh-340px)]">
             <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-20">
                 <tr className="bg-white border-b border-zinc-200">
-                  <th className="sticky left-0 z-30 bg-white dark:bg-zinc-900 px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
+                  <th className="sticky left-0 z-30 bg-white px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
                     Academic Courses
                   </th>
                   {filteredSkills.map(s => (
-                    <th key={s.id} className="relative px-4 py-20 text-center min-w-[120px] sm:min-w-[130px]">
+                    <th key={s.id} className="relative px-4 py-20 text-center min-w-[124px] sm:min-w-[130px] bg-white">
                       <div className="absolute inset-0 flex items-end justify-center pb-10 overflow-hidden">
                         <span 
                           className="whitespace-nowrap origin-bottom-left -rotate-45 block font-black text-[var(--st-text)] text-sm tracking-tight"
@@ -325,10 +325,10 @@ function SurveyPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-zinc-900">
+              <tbody className="bg-white">
                 {filteredCourses.map(course => (
                   <tr key={course.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
-                    <td className="sticky left-0 z-10 bg-white dark:bg-zinc-900 px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
+                    <td className="sticky left-0 z-10 bg-white px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
                       <div className="space-y-2">
                         {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white dark:bg-zinc-800 shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
                         <p className="text-base font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{course.name}</p>
@@ -338,7 +338,7 @@ function SurveyPage() {
                       const key = `${course.id}:${skill.id}`;
                       const isChecked = mappings[key]?.checked;
                       return (
-                        <td key={skill.id} className="px-4 py-7 text-center align-top">
+                        <td key={skill.id} className="px-4 py-7 text-center align-top bg-white">
                           <div className="flex flex-col items-center gap-4">
                             <label className="relative inline-flex items-center justify-center cursor-pointer group/check">
                               <input 
@@ -359,7 +359,7 @@ function SurveyPage() {
                                 placeholder="Add note..."
                                 value={mappings[key]?.notes || ''}
                                 onChange={(e) => updateNotes(course.id, skill.id, e.target.value)}
-                                className="w-[120px] px-3 py-2 bg-white border border-zinc-100 dark:border-zinc-800 rounded-xl text-[10px] font-bold text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
+                                className="w-[124px] px-3 py-2 bg-white border border-zinc-100 dark:border-zinc-800 rounded-xl text-[10px] font-bold text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
                               />
                             )}
                           </div>
