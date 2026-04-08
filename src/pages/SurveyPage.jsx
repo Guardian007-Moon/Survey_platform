@@ -325,8 +325,23 @@ function SurveyPage() {
             <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-20">
                 <tr className="bg-white border-b border-zinc-200">
-                  <th className="sticky left-0 z-30 bg-white px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
-                    {isTransposed ? 'Professional Skills' : 'Academic Courses'}
+                  <th className="sticky left-0 z-30 bg-white px-6 sm:px-10 py-8 text-left border-r border-zinc-200/40 dark:border-zinc-800/40">
+                    <div className="flex flex-col gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--st-primary)] shadow-[0_0_8px_rgba(99,14,212,0.4)]" />
+                        <span className="text-[11px] font-black text-zinc-900 uppercase tracking-[0.2em]">
+                          {isTransposed ? 'Professional Skills' : 'Academic Courses'}
+                        </span>
+                        <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest">(Row)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-zinc-200" />
+                        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+                          {isTransposed ? 'Academic Courses' : 'Professional Skills'}
+                        </span>
+                        <span className="text-[9px] font-black text-zinc-200 uppercase tracking-widest">(Col)</span>
+                      </div>
+                    </div>
                   </th>
                   {tableCols.map(col => (
                     <th key={col.id} className="px-5 py-6 text-center min-w-[130px] bg-white border-b border-zinc-200/60 transition-colors">
