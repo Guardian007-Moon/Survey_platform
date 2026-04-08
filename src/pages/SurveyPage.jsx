@@ -329,11 +329,9 @@ function SurveyPage() {
                     {isTransposed ? 'Professional Skills' : 'Academic Courses'}
                   </th>
                   {tableCols.map(col => (
-                    <th key={col.id} className="relative px-4 py-24 text-center min-w-[124px] sm:min-w-[130px] bg-white">
-                      <div className="absolute inset-0 flex items-end justify-center pb-12">
-                        <span 
-                          className="origin-bottom-left -rotate-45 block font-black text-[var(--st-text)] text-[10px] uppercase tracking-wider w-[180px] text-left leading-tight transition-all"
-                        >
+                    <th key={col.id} className="px-5 py-6 text-center min-w-[130px] bg-white border-b border-zinc-200/60 transition-colors">
+                      <div className="flex items-center justify-center min-h-[48px]">
+                        <span className="font-black text-[var(--st-text)] text-[10px] uppercase tracking-[0.15em] leading-[1.6] line-clamp-3 overflow-hidden">
                           {col.name}
                         </span>
                       </div>
