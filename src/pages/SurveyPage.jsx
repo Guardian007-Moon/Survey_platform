@@ -16,6 +16,7 @@ function SurveyPage() {
   // For Public Surveys
   const [identity, setIdentity] = useState({ name: '', email: '' });
   const [identitySubmitted, setIdentitySubmitted] = useState(false);
+  const [isTransposed, setIsTransposed] = useState(false);
 
   useEffect(() => {
     const validate = async () => {
@@ -203,6 +204,10 @@ function SurveyPage() {
   const totalCount = filteredCourses.length * filteredSkills.length;
   const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
+  // Transpose Logic: Define Rows and Cols based on orientation
+  const tableRows = isTransposed ? filteredSkills : filteredCourses;
+  const tableCols = isTransposed ? filteredCourses : filteredSkills;
+
   return (
     <div className="min-h-screen bg-[var(--st-surface)] font-sans antialiased text-[var(--st-text)]">
       {/* Glassmorphism Header */}
@@ -280,27 +285,38 @@ function SurveyPage() {
         </div>
 
         {/* Search Experience */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-          <div className="relative group">
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-400 transition-colors group-focus-within:text-[var(--st-primary)]">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+        <div className="flex flex-col md:flex-row gap-4 mb-10">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="relative group">
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-400 transition-colors group-focus-within:text-[var(--st-primary)]">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+              </div>
+              <input 
+                placeholder="Filter courses..." 
+                value={searchCourse} onChange={e => setSearchCourse(e.target.value)}
+                className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-sm font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
+              />
             </div>
-            <input 
-              placeholder="Filter courses by code or name..." 
-              value={searchCourse} onChange={e => setSearchCourse(e.target.value)}
-              className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
-            />
-          </div>
-          <div className="relative group">
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-400 transition-colors group-focus-within:text-[var(--st-primary)]">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+            <div className="relative group">
+              <div className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-400 transition-colors group-focus-within:text-[var(--st-primary)]">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+              </div>
+              <input 
+                placeholder="Search skills..." 
+                value={searchSkill} onChange={e => setSearchSkill(e.target.value)}
+                className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-sm font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
+              />
             </div>
-            <input 
-              placeholder="Search available skills..." 
-              value={searchSkill} onChange={e => setSearchSkill(e.target.value)}
-              className="w-full pl-16 pr-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 focus:border-[var(--st-primary)] rounded-full text-base font-bold text-[var(--st-text)] shadow-sm focus:shadow-xl focus:shadow-violet-500/5 transition-all outline-none placeholder-zinc-400" 
-            />
           </div>
+          <button 
+            onClick={() => setIsTransposed(!isTransposed)}
+            className="flex items-center justify-center gap-3 px-8 py-5 bg-white border border-zinc-200 dark:border-zinc-700 rounded-full hover:border-[var(--st-primary)] hover:text-[var(--st-primary)] transition-all shadow-sm active:scale-95 group"
+          >
+            <svg className={`w-5 h-5 transition-transform duration-500 ${isTransposed ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+            </svg>
+            <span className="text-sm font-black uppercase tracking-widest whitespace-nowrap">Transpose Matrix</span>
+          </button>
         </div>
 
         {/* The Unified No-Line Matrix */}
@@ -310,15 +326,15 @@ function SurveyPage() {
               <thead className="sticky top-0 z-20">
                 <tr className="bg-white border-b border-zinc-200">
                   <th className="sticky left-0 z-30 bg-white px-6 sm:px-10 py-8 text-left text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em] border-r border-zinc-200/40 dark:border-zinc-800/40">
-                    Academic Courses
+                    {isTransposed ? 'Professional Skills' : 'Academic Courses'}
                   </th>
-                  {filteredSkills.map(s => (
-                    <th key={s.id} className="relative px-4 py-20 text-center min-w-[124px] sm:min-w-[130px] bg-white">
+                  {tableCols.map(col => (
+                    <th key={col.id} className="relative px-4 py-20 text-center min-w-[124px] sm:min-w-[130px] bg-white">
                       <div className="absolute inset-0 flex items-end justify-center pb-10 overflow-hidden">
                         <span 
-                          className="whitespace-nowrap origin-bottom-left -rotate-45 block font-black text-[var(--st-text)] text-sm tracking-tight"
+                          className="whitespace-nowrap origin-bottom-left -rotate-45 block font-black text-[var(--st-text)] text-[10px] uppercase tracking-wider"
                         >
-                          {s.name}
+                          {col.name}
                         </span>
                       </div>
                     </th>
@@ -326,25 +342,27 @@ function SurveyPage() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {filteredCourses.map(course => (
-                  <tr key={course.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
+                {tableRows.map(row => (
+                  <tr key={row.id} className="tonal-row group hover:bg-[var(--st-primary)]/5 transition-colors duration-300">
                     <td className="sticky left-0 z-10 bg-white px-6 sm:px-10 py-7 transition-colors border-r border-[#e8eaed] dark:border-zinc-800 min-w-[180px] sm:min-w-[280px] after:absolute after:right-0 after:top-0 after:bottom-0 after:w-px after:bg-zinc-200/50 shadow-[4px_0_12px_-4px_rgba(0,0,0,0.05)] dark:shadow-none">
                       <div className="space-y-2">
-                        {course.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{course.code}</span>}
-                        <p className="text-base font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{course.name}</p>
+                        {row.code && <span className="inline-block px-2 py-0.5 rounded-md bg-white shadow-sm text-[10px] font-black text-[var(--st-primary)] uppercase tracking-widest">{row.code}</span>}
+                        <p className="text-sm font-bold text-[var(--st-text)] group-hover:text-[var(--st-primary)] transition-colors leading-tight">{row.name}</p>
                       </div>
                     </td>
-                    {filteredSkills.map(skill => {
-                      const key = `${course.id}:${skill.id}`;
+                    {tableCols.map(col => {
+                      const courseId = isTransposed ? col.id : row.id;
+                      const skillId = isTransposed ? row.id : col.id;
+                      const key = `${courseId}:${skillId}`;
                       const isChecked = mappings[key]?.checked;
                       return (
-                        <td key={skill.id} className="px-4 py-7 text-center align-top bg-white">
+                        <td key={col.id} className="px-4 py-7 text-center align-top bg-white">
                           <div className="flex flex-col items-center gap-4">
                             <label className="relative inline-flex items-center justify-center cursor-pointer group/check">
                               <input 
                                 type="checkbox" 
                                 checked={!!isChecked} 
-                                onChange={() => toggleMapping(course.id, skill.id)}
+                                onChange={() => toggleMapping(courseId, skillId)}
                                 className="sr-only peer" 
                               />
                               <div className="w-7 h-7 rounded-lg border-2 border-zinc-200 dark:border-zinc-800 peer-checked:bg-[var(--st-primary)] peer-checked:border-[var(--st-primary)] flex items-center justify-center transition-all duration-300 group-hover/check:border-[var(--st-primary)] peer-checked:shadow-lg peer-checked:shadow-violet-500/20">
@@ -358,7 +376,7 @@ function SurveyPage() {
                               <textarea 
                                 placeholder="Add note..."
                                 value={mappings[key]?.notes || ''}
-                                onChange={(e) => updateNotes(course.id, skill.id, e.target.value)}
+                                onChange={(e) => updateNotes(courseId, skillId, e.target.value)}
                                 className="w-[124px] px-3 py-2 bg-white border border-zinc-100 dark:border-zinc-800 rounded-xl text-[10px] font-bold text-[var(--st-text)] focus:ring-4 focus:ring-[var(--st-primary)]/5 transition-all outline-none min-h-[40px] resize-none animate-scale-in"
                               />
                             )}
