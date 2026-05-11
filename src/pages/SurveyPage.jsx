@@ -82,9 +82,9 @@ function SurveyPage() {
     if (publicId) return alert('Drafts are not supported for public links. Please complete and submit.');
     setSaving(true);
     try {
-      const rows = Object.entries(mappings).filter(([, v]) => v.checked).map(([key, val]) => {
+      const rows = Object.entries(mappings).filter(([, v]) => v.rating > 0).map(([key, val]) => {
         const [courseId, skillId] = key.split(':');
-        return { courseId, skillId, notes: val.notes };
+        return { courseId, skillId, rating: val.rating, notes: val.notes };
       });
       await api.post('/responses/save-draft', { token, mappings: rows });
       alert('Draft saved!');
@@ -95,16 +95,15 @@ function SurveyPage() {
   };
 
   const submitSurvey = async () => {
-    const count = Object.values(mappings).filter(v => v.checked).length;
-    if (count === 0 && !confirm('No mappings selected. Submit anyway?')) return;
-    if (!confirm(`Submit ${count} mapping(s)? You won't be able to edit after submission.`)) return;
+    const rows = Object.entries(mappings).filter(([, v]) => v.rating > 0).map(([key, val]) => {
+      const [courseId, skillId] = key.split(':');
+      return { courseId, skillId, rating: val.rating, notes: val.notes };
+    });
+
+    if (rows.length === 0 && !confirm('No mappings selected. Submit anyway?')) return;
+    if (!confirm(`Submit ${rows.length} mapping(s)? You won't be able to edit after submission.`)) return;
 
     try {
-      const rows = Object.entries(mappings).filter(([, v]) => v.checked).map(([key, val]) => {
-        const [courseId, skillId] = key.split(':');
-        return { courseId, skillId, notes: val.notes };
-      });
-
       if (token) {
         await api.post('/responses/submit', { token, mappings: rows });
       } else if (publicId) {
@@ -164,6 +163,30 @@ function SurveyPage() {
     </div>
   );
 
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--st-surface)]">
+      <div className="flex flex-col items-center gap-6">
+        <div className="w-16 h-16 border-4 border-zinc-100 border-t-[var(--st-primary)] rounded-full animate-spin" />
+        <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest animate-pulse">Synchronizing Studio...</p>
+      </div>
+    </div>
+  );
+
+  if (!surveyData) return (
+    <div className="min-h-screen flex items-center justify-center bg-[var(--st-surface)]">
+      <div className="tonal-card p-10 max-w-md w-full text-center space-y-6">
+        <div className="text-red-500 text-5xl">⚠️</div>
+        <h2 className="text-2xl font-black text-[var(--st-text)]">Survey Not Found</h2>
+        <p className="text-sm font-bold text-[var(--st-text-variant)]">This assessment link may have expired or is incorrect.</p>
+      </div>
+    </div>
+  );
+
+  const invitation = surveyData?.invitation;
+  const courses = surveyData?.courses || [];
+  const skills = surveyData?.skills || [];
+  const filteredSkills = skills.filter(s => s?.name?.toLowerCase().includes(searchSkill.toLowerCase()));
+
   // Render Step 1: Identity Collection (for Public)
   const renderIdentityStep = () => (
     <div className="min-h-screen flex items-center justify-center bg-[var(--st-surface)]">
@@ -210,34 +233,41 @@ function SurveyPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[50vh] overflow-auto p-2">
-          {courses.map(course => {
-            const isSelected = selectedCourseIds.includes(course.id);
-            return (
-              <button 
-                key={course.id}
-                onClick={() => {
-                  setSelectedCourseIds(prev => isSelected ? prev.filter(id => id !== course.id) : [...prev, course.id]);
-                }}
-                className={`flex items-start gap-5 p-6 rounded-[28px] border-2 transition-all text-left group ${
-                  isSelected ? 'border-[var(--st-primary)] bg-white shadow-xl shadow-violet-500/10' : 'border-zinc-200 bg-white/50 hover:border-zinc-300'
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-2xl shrink-0 flex items-center justify-center transition-all ${
-                  isSelected ? 'primary-gradient text-white' : 'bg-zinc-100 text-zinc-400 group-hover:bg-zinc-200'
-                }`}>
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                  </svg>
-                </div>
-                <div>
-                  <span className={`text-[10px] font-black uppercase tracking-widest ${isSelected ? 'text-[var(--st-primary)]' : 'text-zinc-400'}`}>
-                    {course.code}
-                  </span>
-                  <h3 className="text-lg font-black text-[var(--st-text)] leading-tight mt-1">{course.name}</h3>
-                </div>
-              </button>
-            );
-          })}
+          {courses.length === 0 ? (
+            <div className="col-span-full py-20 text-center bg-white/50 rounded-[32px] border-2 border-dashed border-zinc-200">
+              <p className="text-zinc-400 font-bold">No courses found in this survey.</p>
+            </div>
+          ) : (
+            courses.map(course => {
+              if (!course) return null;
+              const isSelected = selectedCourseIds.includes(course.id);
+              return (
+                <button 
+                  key={course.id}
+                  onClick={() => {
+                    setSelectedCourseIds(prev => isSelected ? prev.filter(id => id !== course.id) : [...prev, course.id]);
+                  }}
+                  className={`flex items-start gap-5 p-6 rounded-[28px] border-2 transition-all text-left group ${
+                    isSelected ? 'border-[var(--st-primary)] bg-white shadow-xl shadow-violet-500/10' : 'border-zinc-200 bg-white/50 hover:border-zinc-300'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-2xl shrink-0 flex items-center justify-center transition-all ${
+                    isSelected ? 'primary-gradient text-white' : 'bg-zinc-100 text-zinc-400 group-hover:bg-zinc-200'
+                  }`}>
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                  </div>
+                  <div>
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${isSelected ? 'text-[var(--st-primary)]' : 'text-zinc-400'}`}>
+                      {course.code || 'NO CODE'}
+                    </span>
+                    <h3 className="text-lg font-black text-[var(--st-text)] leading-tight mt-1">{course.name || 'Untitled Course'}</h3>
+                  </div>
+                </button>
+              );
+            })
+          )}
         </div>
 
         <div className="flex flex-col items-center gap-6 pt-6">
@@ -257,7 +287,7 @@ function SurveyPage() {
   // Render Step 3: The Curation Matrix
   const renderMappingStep = () => {
     const coursesToRender = courses.filter(c => selectedCourseIds.includes(c.id)).filter(c =>
-      c.name.toLowerCase().includes(searchCourse.toLowerCase()) ||
+      c.name?.toLowerCase().includes(searchCourse.toLowerCase()) ||
       c.code?.toLowerCase().includes(searchCourse.toLowerCase())
     );
     
