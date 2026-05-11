@@ -27,6 +27,7 @@ router.get('/survey/:surveyId', authMiddleware, async (req, res) => {
       Course_Code: r.courses.code,
       Course_Name: r.courses.name,
       Skill: r.skills.name,
+      Weight: r.rating || 0,
       Notes: r.notes || '',
       Submitted_At: r.survey_invitations.submitted_at || '',
     }));
@@ -44,8 +45,11 @@ router.get('/survey/:surveyId', authMiddleware, async (req, res) => {
     const pivotRows = courses?.map(c => {
       const row = { Course: `${c.courses.code} - ${c.courses.name}` };
       skills?.forEach(s => {
-        const count = responses.filter(r => r.course_id === c.course_id && r.skill_id === s.skill_id).length;
-        row[s.skills.name] = count;
+        const matchingResponses = responses.filter(r => r.course_id === c.course_id && r.skill_id === s.skill_id);
+        const avgRating = matchingResponses.length > 0 
+          ? Math.round(matchingResponses.reduce((acc, curr) => acc + (curr.rating || 0), 0) / matchingResponses.length) 
+          : 0;
+        row[s.skills.name] = avgRating;
       });
       return row;
     });
@@ -89,6 +93,7 @@ router.get('/survey/:surveyId/csv', authMiddleware, async (req, res) => {
       Course_Code: r.courses.code,
       Course_Name: r.courses.name,
       Skill: r.skills.name,
+      Weight: r.rating || 0,
       Notes: r.notes || '',
       Submitted_At: r.survey_invitations.submitted_at || '',
     }));

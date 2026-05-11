@@ -63,6 +63,7 @@ router.post('/submit', async (req, res) => {
         invitation_id: invitation.id,
         course_id: m.courseId,
         skill_id: m.skillId,
+        rating: m.rating || 0,
         notes: m.notes || null,
       }));
       const { error: insertError } = await supabase.from('responses').insert(rows);
@@ -94,6 +95,7 @@ router.post('/save-draft', async (req, res) => {
         invitation_id: invitation.id,
         course_id: m.courseId,
         skill_id: m.skillId,
+        rating: m.rating || 0,
         notes: m.notes || null,
       }));
       await supabase.from('responses').insert(rows);
@@ -179,6 +181,7 @@ router.post('/submit-public', async (req, res) => {
         invitation_id: invitation.id,
         course_id: m.courseId,
         skill_id: m.skillId,
+        rating: m.rating || 0,
         notes: m.notes || null,
       }));
       const { error: insertError } = await supabase.from('responses').insert(rows);
