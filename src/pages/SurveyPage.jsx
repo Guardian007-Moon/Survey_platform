@@ -227,18 +227,43 @@ function SurveyPage() {
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-black text-[var(--st-text)] tracking-tight">Select Your Courses</h1>
           <p className="text-lg text-[var(--st-text-variant)] max-w-2xl mx-auto font-bold">
-            Which courses are you currently responsible for in this survey? 
-            We will only show these in your mapping matrix.
+            Which courses are you currently responsible for? 
+            Search and select them below.
           </p>
         </div>
 
+        <div className="max-w-md mx-auto">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+              <svg className="w-5 h-5 text-zinc-400 group-focus-within:text-[var(--st-primary)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input 
+              type="text"
+              placeholder="Search by course name or code..."
+              value={searchCourse}
+              onChange={(e) => setSearchCourse(e.target.value)}
+              className="w-full pl-14 pr-6 py-5 bg-white border-2 border-zinc-100 rounded-[24px] text-lg font-bold text-[var(--st-text)] focus:border-[var(--st-primary)] focus:ring-8 focus:ring-[var(--st-primary)]/5 outline-none transition-all shadow-sm"
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[50vh] overflow-auto p-2">
-          {courses.length === 0 ? (
+          {courses.filter(c => 
+            c?.name?.toLowerCase().includes(searchCourse.toLowerCase()) || 
+            c?.code?.toLowerCase().includes(searchCourse.toLowerCase())
+          ).length === 0 ? (
             <div className="col-span-full py-20 text-center bg-white/50 rounded-[32px] border-2 border-dashed border-zinc-200">
-              <p className="text-zinc-400 font-bold">No courses found in this survey.</p>
+              <p className="text-zinc-400 font-bold">No courses match your search.</p>
             </div>
           ) : (
-            courses.map(course => {
+            courses
+              .filter(c => 
+                c?.name?.toLowerCase().includes(searchCourse.toLowerCase()) || 
+                c?.code?.toLowerCase().includes(searchCourse.toLowerCase())
+              )
+              .map(course => {
               if (!course) return null;
               const isSelected = selectedCourseIds.includes(course.id);
               return (
