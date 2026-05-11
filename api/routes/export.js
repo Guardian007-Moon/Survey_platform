@@ -11,7 +11,11 @@ router.get('/survey/:surveyId', authMiddleware, async (req, res) => {
       .from('responses')
       .select(`
         *,
-        survey_invitations(experts(name, email), surveys(name), submitted_at),
+        survey_invitations(
+          experts(name, email), 
+          surveys(name), 
+          submitted_at
+        ),
         courses(code, name),
         skills(name)
       `)
@@ -19,20 +23,31 @@ router.get('/survey/:surveyId', authMiddleware, async (req, res) => {
 
     if (error) throw error;
 
-    // Build rows for XLSX with safe access
+    // Helper to get nested data (handles both object and array-of-one)
+    const getNested = (obj, path) => {
+      let current = obj;
+      for (const part of path.split('.')) {
+        if (!current) return null;
+        if (Array.isArray(current)) current = current[0];
+        current = current[part];
+      }
+      return current;
+    };
+
+    // Build rows for XLSX
     const rows = (responses || []).map(r => ({
-      Expert: r.survey_invitations?.experts?.name || 'N/A',
-      Email: r.survey_invitations?.experts?.email || 'N/A',
-      Survey: r.survey_invitations?.surveys?.name || 'N/A',
+      Expert: getNested(r, 'survey_invitations.experts.name') || 'N/A',
+      Email: getNested(r, 'survey_invitations.experts.email') || 'N/A',
+      Survey: getNested(r, 'survey_invitations.surveys.name') || 'N/A',
       Course_Code: r.courses?.code || 'N/A',
       Course_Name: r.courses?.name || 'N/A',
       Skill: r.skills?.name || 'N/A',
       Weight: r.rating || 0,
       Notes: r.notes || '',
-      Submitted_At: r.survey_invitations?.submitted_at || '',
+      Submitted_At: r.survey_invitations?.submitted_at || r.survey_invitations?.[0]?.submitted_at || '',
     }));
 
-    // Build also a pivot matrix: rows = courses, cols = skills, cells = count of experts
+    // Build pivot matrix
     const { data: courses } = await supabase
       .from('survey_courses')
       .select('course_id, courses(code, name)')
@@ -54,24 +69,21 @@ router.get('/survey/:surveyId', authMiddleware, async (req, res) => {
       return row;
     });
 
-    // Create workbook with two sheets
     const wb = XLSX.utils.book_new();
     const ws1 = XLSX.utils.json_to_sheet(rows);
-    const ws2 = XLSX.utils.json_to_sheet(pivotRows || []);
+    const ws2 = XLSX.utils.json_to_sheet(pivotRows);
     XLSX.utils.book_append_sheet(wb, ws1, 'All Responses');
     XLSX.utils.book_append_sheet(wb, ws2, 'Summary Matrix');
 
     const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', `attachment; filename="survey_${req.params.surveyId}_results.xlsx"`);
+    res.setHeader('Content-Disposition', `attachment; filename="survey_results.xlsx"`);
     res.send(buffer);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// CSV version
 router.get('/survey/:surveyId/csv', authMiddleware, async (req, res) => {
   try {
     const { data: responses, error } = await supabase
@@ -86,16 +98,26 @@ router.get('/survey/:surveyId/csv', authMiddleware, async (req, res) => {
 
     if (error) throw error;
 
+    const getNested = (obj, path) => {
+      let current = obj;
+      for (const part of path.split('.')) {
+        if (!current) return null;
+        if (Array.isArray(current)) current = current[0];
+        current = current[part];
+      }
+      return current;
+    };
+
     const rows = (responses || []).map(r => ({
-      Expert: r.survey_invitations?.experts?.name || 'N/A',
-      Email: r.survey_invitations?.experts?.email || 'N/A',
-      Survey: r.survey_invitations?.surveys?.name || 'N/A',
+      Expert: getNested(r, 'survey_invitations.experts.name') || 'N/A',
+      Email: getNested(r, 'survey_invitations.experts.email') || 'N/A',
+      Survey: getNested(r, 'survey_invitations.surveys.name') || 'N/A',
       Course_Code: r.courses?.code || 'N/A',
       Course_Name: r.courses?.name || 'N/A',
       Skill: r.skills?.name || 'N/A',
       Weight: r.rating || 0,
       Notes: r.notes || '',
-      Submitted_At: r.survey_invitations?.submitted_at || '',
+      Submitted_At: r.survey_invitations?.submitted_at || r.survey_invitations?.[0]?.submitted_at || '',
     }));
 
     const csv = [
@@ -104,7 +126,7 @@ router.get('/survey/:surveyId/csv', authMiddleware, async (req, res) => {
     ].join('\n');
 
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename="survey_${req.params.surveyId}_results.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="survey_results.csv"`);
     res.send(csv);
   } catch (err) {
     res.status(500).json({ error: err.message });
